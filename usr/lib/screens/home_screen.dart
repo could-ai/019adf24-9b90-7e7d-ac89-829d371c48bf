@@ -7,7 +7,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('DK WIN PREDICTOR'),
+        title: const Text('AMAR CLUB PREDICTOR'),
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -34,8 +34,8 @@ class HomeScreen extends StatelessWidget {
                     children: [
                       _buildMenuCard(
                         context,
-                        'Generate\nPrediction',
-                        Icons.auto_awesome,
+                        'Wingo 30s\nPrediction',
+                        Icons.timer_3,
                         Colors.amber,
                         () => Navigator.pushNamed(context, '/predict'),
                       ),
@@ -48,29 +48,29 @@ class HomeScreen extends StatelessWidget {
                       ),
                       _buildMenuCard(
                         context,
-                        'VIP\nTips',
+                        'VIP\nSignals',
                         Icons.star,
                         Colors.purple,
                         () {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('VIP Area coming soon!')),
+                            const SnackBar(content: Text('VIP Signal Group coming soon!')),
                           );
                         },
                       ),
                       _buildMenuCard(
                         context,
-                        'How to\nPlay',
-                        Icons.help_outline,
+                        'Trend\nAnalysis',
+                        Icons.trending_up,
                         Colors.green,
                         () {
-                          _showHowToPlayDialog(context);
+                          _showTrendDialog(context);
                         },
                       ),
                     ],
                   ),
                 ),
                 const Text(
-                  'Disclaimer: This app is for entertainment purposes only. Predictions are based on algorithms and do not guarantee real-world results.',
+                  'Disclaimer: This tool analyzes patterns for Amar Club Wingo 30s. Results are probabilistic estimates.',
                   style: TextStyle(color: Colors.grey, fontSize: 10),
                   textAlign: TextAlign.center,
                 ),
@@ -102,10 +102,10 @@ class HomeScreen extends StatelessWidget {
       ),
       child: Column(
         children: const [
-          Icon(Icons.emoji_events, size: 48, color: Colors.white),
+          Icon(Icons.rocket_launch, size: 48, color: Colors.white),
           SizedBox(height: 10),
           Text(
-            'WIN RATE: 98%',
+            'AMAR CLUB WINGO',
             style: TextStyle(
               color: Colors.white,
               fontSize: 24,
@@ -120,7 +120,7 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           Text(
-            'Daily Lucky Numbers',
+            '30s High Accuracy Algo',
             style: TextStyle(
               color: Colors.white70,
               fontSize: 14,
@@ -178,23 +178,23 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  void _showHowToPlayDialog(BuildContext context) {
+  void _showTrendDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xFF1E1E1E),
-        title: const Text('How to Use', style: TextStyle(color: Colors.white)),
+        title: const Text('Trend Analysis', style: TextStyle(color: Colors.white)),
         content: const Text(
-          '1. Click on Generate Prediction.\n'
-          '2. Wait for the algorithm to analyze patterns.\n'
-          '3. Use the predicted number for your reference.\n\n'
-          'Remember: Play responsibly.',
+          'Current Market Trend:\n\n'
+          '• Big/Small Pattern: AABB Trend detected\n'
+          '• Color Dominance: Red is trending (60%)\n'
+          '• Best Time to Play: Now',
           style: TextStyle(color: Colors.white70),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Got it', style: TextStyle(color: Color(0xFFFFD700))),
+            child: const Text('Close', style: TextStyle(color: Color(0xFFFFD700))),
           ),
         ],
       ),

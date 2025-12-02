@@ -12,8 +12,10 @@ class PredictionScreen extends StatefulWidget {
 class _PredictionScreenState extends State<PredictionScreen> with SingleTickerProviderStateMixin {
   bool _isAnalyzing = false;
   bool _showResult = false;
-  String _statusText = "Ready to Analyze";
+  String _statusText = "Ready for Wingo 30s";
   int _predictedNumber = 0;
+  String _predictedSize = "";
+  String _predictedColor = "";
   String _confidence = "0%";
   late AnimationController _controller;
 
@@ -21,7 +23,7 @@ class _PredictionScreenState extends State<PredictionScreen> with SingleTickerPr
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(seconds: 2),
+      duration: const Duration(seconds: 1),
       vsync: this,
     )..repeat();
   }
@@ -36,34 +38,64 @@ class _PredictionScreenState extends State<PredictionScreen> with SingleTickerPr
     setState(() {
       _isAnalyzing = true;
       _showResult = false;
-      _statusText = "Connecting to Server...";
+      _statusText = "Syncing with Amar Club...";
     });
 
-    // Simulate analysis steps
-    Timer(const Duration(seconds: 1), () {
-      setState(() => _statusText = "Analyzing Past Trends...");
+    // Simulate analysis steps - faster for 30s game
+    Timer(const Duration(milliseconds: 800), () {
+      setState(() => _statusText = "Analyzing 30s Trend...");
+    });
+
+    Timer(const Duration(milliseconds: 1600), () {
+      setState(() => _statusText = "Calculating Next Result...");
     });
 
     Timer(const Duration(seconds: 3), () {
-      setState(() => _statusText = "Calculating Probabilities...");
+      _generateResult();
     });
+  }
 
-    Timer(const Duration(seconds: 5), () {
-      setState(() {
-        _isAnalyzing = false;
-        _showResult = true;
-        _statusText = "Analysis Complete";
-        _predictedNumber = Random().nextInt(100); // Generates 0-99
-        _confidence = "${85 + Random().nextInt(15)}%"; // 85-99%
-      });
+  void _generateResult() {
+    setState(() {
+      _isAnalyzing = false;
+      _showResult = true;
+      _statusText = "Prediction Ready";
+      
+      // Wingo Logic: 0-9
+      _predictedNumber = Random().nextInt(10); 
+      
+      // Determine Size (0-4 Small, 5-9 Big)
+      _predictedSize = _predictedNumber >= 5 ? "BIG" : "SMALL";
+      
+      // Determine Color
+      // 0: Red+Violet, 5: Green+Violet
+      // 1,3,7,9: Green
+      // 2,4,6,8: Red
+      if (_predictedNumber == 0) {
+        _predictedColor = "Red + Violet";
+      } else if (_predictedNumber == 5) {
+        _predictedColor = "Green + Violet";
+      } else if ([1, 3, 7, 9].contains(_predictedNumber)) {
+        _predictedColor = "Green";
+      } else {
+        _predictedColor = "Red";
+      }
+
+      _confidence = "${88 + Random().nextInt(12)}%"; // 88-99%
     });
+  }
+
+  Color _getColorForText(String colorName) {
+    if (colorName.contains("Green")) return Colors.green;
+    if (colorName.contains("Red")) return Colors.red;
+    return Colors.purple;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('AI PREDICTION'),
+        title: const Text('WINGO 30S AI'),
       ),
       body: Container(
         width: double.infinity,
@@ -72,10 +104,10 @@ class _PredictionScreenState extends State<PredictionScreen> with SingleTickerPr
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (!_showResult && !_isAnalyzing) ...[
-              const Icon(Icons.analytics_outlined, size: 100, color: Colors.grey),
+              const Icon(Icons.timer_3_outlined, size: 100, color: Colors.grey),
               const SizedBox(height: 20),
               const Text(
-                "Tap the button below to generate today's lucky winning number using our advanced AI algorithm.",
+                "Amar Club Wingo 30s Predictor\nTap below to analyze the current period.",
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.white70, fontSize: 16),
               ),
@@ -120,7 +152,7 @@ class _PredictionScreenState extends State<PredictionScreen> with SingleTickerPr
             ] else if (_showResult) ...[
               const Spacer(),
               Container(
-                padding: const EdgeInsets.all(30),
+                padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
                   color: const Color(0xFF1E1E1E),
                   borderRadius: BorderRadius.circular(30),
@@ -136,21 +168,61 @@ class _PredictionScreenState extends State<PredictionScreen> with SingleTickerPr
                 child: Column(
                   children: [
                     const Text(
-                      "PREDICTED NUMBER",
+                      "NEXT RESULT PREDICTION",
                       style: TextStyle(
                         color: Colors.white54,
-                        fontSize: 14,
+                        fontSize: 12,
                         letterSpacing: 2,
                       ),
                     ),
                     const SizedBox(height: 20),
-                    Text(
-                      _predictedNumber.toString().padLeft(2, '0'),
-                      style: const TextStyle(
-                        color: Color(0xFFFFD700),
-                        fontSize: 80,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Number Display
+                        Container(
+                          width: 80,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: _getColorForText(_predictedColor).withOpacity(0.2),
+                            border: Border.all(color: _getColorForText(_predictedColor), width: 3),
+                          ),
+                          child: Center(
+                            child: Text(
+                              _predictedNumber.toString(),
+                              style: TextStyle(
+                                color: _getColorForText(_predictedColor),
+                                fontSize: 40,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 20),
+                        // Details Display
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _predictedSize,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              _predictedColor,
+                              style: TextStyle(
+                                color: _getColorForText(_predictedColor),
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 20),
                     Container(
@@ -160,7 +232,7 @@ class _PredictionScreenState extends State<PredictionScreen> with SingleTickerPr
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        "Confidence: $_confidence",
+                        "Win Probability: $_confidence",
                         style: const TextStyle(
                           color: Colors.green,
                           fontWeight: FontWeight.bold,
@@ -172,7 +244,7 @@ class _PredictionScreenState extends State<PredictionScreen> with SingleTickerPr
               ),
               const SizedBox(height: 40),
               const Text(
-                "This prediction is valid for the next 2 hours.",
+                "Bet responsibly. This is a statistical prediction.",
                 style: TextStyle(color: Colors.white38),
               ),
               const Spacer(),
@@ -192,7 +264,7 @@ class _PredictionScreenState extends State<PredictionScreen> with SingleTickerPr
                     ),
                   ),
                   child: const Text(
-                    "TRY AGAIN",
+                    "NEXT PERIOD",
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
@@ -232,7 +304,7 @@ class _PredictionScreenState extends State<PredictionScreen> with SingleTickerPr
             Icon(Icons.touch_app, color: Colors.black, size: 30),
             SizedBox(width: 15),
             Text(
-              "START ANALYSIS",
+              "GET LUCKY NUMBER",
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 22,

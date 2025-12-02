@@ -8,53 +8,72 @@ class HistoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('PAST RESULTS'),
+        title: const Text('WINGO HISTORY'),
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(16),
-        itemCount: 10,
+        itemCount: 15,
         itemBuilder: (context, index) {
-          // Generate mock data
-          final date = DateTime.now().subtract(Duration(days: index));
-          final number = Random(index).nextInt(100);
+          // Generate mock Wingo data
+          final period = 20240227000 + (1000 - index);
+          final number = Random(index).nextInt(10); // 0-9
+          final isBig = number >= 5;
+          final color = (number == 0 || number == 5) 
+              ? Colors.purple 
+              : ([1,3,7,9].contains(number) ? Colors.green : Colors.red);
+          
           final isWin = Random(index).nextBool();
 
           return Card(
-            margin: const EdgeInsets.only(bottom: 16),
+            margin: const EdgeInsets.only(bottom: 12),
             child: ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               leading: Container(
                 width: 50,
                 height: 50,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF2C2C2C),
+                  color: color.withOpacity(0.2),
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: isWin ? Colors.green : Colors.grey,
+                    color: color,
                     width: 2,
                   ),
                 ),
                 child: Center(
                   child: Text(
-                    number.toString().padLeft(2, '0'),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
+                    number.toString(),
+                    style: TextStyle(
+                      color: color,
+                      fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
               ),
               title: Text(
-                "Prediction #${1000 - index}",
+                "Period: $period",
                 style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
+                  fontSize: 14,
                 ),
               ),
-              subtitle: Text(
-                "${date.day}/${date.month}/${date.year}",
-                style: const TextStyle(color: Colors.white54),
+              subtitle: Row(
+                children: [
+                  Text(
+                    isBig ? "BIG" : "SMALL",
+                    style: const TextStyle(color: Colors.white70),
+                  ),
+                  const SizedBox(width: 10),
+                  Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: color,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ],
               ),
               trailing: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -63,7 +82,7 @@ class HistoryScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  isWin ? "WIN" : "MISS",
+                  isWin ? "WIN" : "LOSS",
                   style: TextStyle(
                     color: isWin ? Colors.green : Colors.red,
                     fontWeight: FontWeight.bold,

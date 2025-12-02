@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'DK Win Predictor',
+      title: 'Amar Club Wingo Predictor',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
